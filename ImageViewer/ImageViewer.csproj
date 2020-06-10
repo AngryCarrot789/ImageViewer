@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>appIconIco.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
@@ -163,6 +166,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\openFolder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\appIconIco.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\appIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="appIconIco.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:ImageViewer"
         xmlns:utils="clr-namespace:ImageViewer.Utilities" xmlns:controls="clr-namespace:ImageViewer.Controls"
         mc:Ignorable="d" Style="{DynamicResource CustomWindowStyle}"
-        Title="MainWindow" Height="576" Width="1024">
+        Title="MainWindow" Height="600" Width="1024"
+        Icon="Resources/appIconIco.ico">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <DropShadowBitmapEffect x:Key="NormalShadow" ShadowDepth="2" Softness="0.2" Opacity="0.64"/>
