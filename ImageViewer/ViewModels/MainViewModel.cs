@@ -55,9 +55,14 @@ namespace ImageViewer.ViewModels
         public ICommand OpenImagesInDirectoryCommand { get; private set; }
         public ICommand CloseSelectedImageCommand { get; private set; }
         public ICommand CloseAllImagesCommand { get; private set; }
+
+        public ICommand NextImageCommand { get; private set; }
+        public ICommand PreviousImageCommand { get; private set; }
+
         //public ICommand PrintImageCommand { get; private set; }
 
         public Action<ImageItem> AnimateFadeIn { get; set; }
+        public Action ResetImagePosition { get; set; }
 
         public MainViewModel()
         {
@@ -66,6 +71,9 @@ namespace ImageViewer.ViewModels
             OpenImagesInDirectoryCommand = new Command(OpenImagesInFolder);
             CloseSelectedImageCommand = new Command(CloseSelectedImage);
             CloseAllImagesCommand = new Command(CloseAllImages);
+
+            NextImageCommand = new Command(NextImage);
+            PreviousImageCommand = new Command(PreviousImage);
         }
 
         public void SetImage(ImageItem item)
@@ -77,7 +85,18 @@ namespace ImageViewer.ViewModels
             }
             else
                 ImageSelected = false;
+        }
 
+        public void NextImage()
+        {
+            if (Image != null)
+                Image.MoveRight();
+        }
+
+        public void PreviousImage()
+        {
+            if (Image != null)
+                Image.MoveLeft();
         }
 
         #region Helpers
@@ -95,15 +114,23 @@ namespace ImageViewer.ViewModels
         {
             ImageItems.Add(item);
             AnimateFadeIn?.Invoke(item);
+            ResetImagePosition?.Invoke();
         }
 
         public void AddImage(ImageItemViewModel imageView)
         {
-            ImageItem image = new ImageItem(imageView);
-            image.Close = CloseImage;
-            image.OpenInFileExplorer = OpenImageInFileExplorer;
+            Application.Current?.Dispatcher.Invoke(() =>
+            {
+                ImageItem image = new ImageItem(imageView)
+                {
+                    Close = CloseImage,
+                    OpenInFileExplorer = OpenImageInFileExplorer
+                };
 
-            AddImage(image);
+                AddImage(image);
+
+                SelectedImage = image;
+            });
         }
 
         #endregion
@@ -135,32 +162,40 @@ namespace ImageViewer.ViewModels
 
         public void OpenImagesInFolder()
         {
-            System.Windows.Forms.FolderBrowserDialog ofd =
+            System.Windows.Forms.FolderBrowserDialog fbd =
                 new System.Windows.Forms.FolderBrowserDialog();
-            if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                if (ofd.SelectedPath.IsDirectory())
+                string folder = fbd.SelectedPath;
+                if (folder.IsDirectory())
                 {
                     MessageBoxResult a =
                         MessageBox.Show(
-                            "Open all files in this directory?",
-                            "Open entire directory",
-                            MessageBoxButton.YesNo);
-                    if (a == MessageBoxResult.Yes)
+                            $"Open all images in: {folder}?",
+                            "Open all images in folder?",
+                            MessageBoxButton.YesNoCancel);
+                    switch (a)
                     {
-                        try
-                        {
-                            foreach(string imagePath in Directory.GetFiles(ofd.SelectedPath))
+                        case MessageBoxResult.Yes:
+                            try
                             {
-                                OpenImage(imagePath);
+                                Task.Run(() =>
+                                {
+                                    foreach (string imagePath in Directory.GetFiles(folder))
+                                    {
+                                        OpenImage(imagePath);
+                                    }
+                                });
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            MessageBox.Show(
-                                $"Error opening all images in a directory:  {e.Message}",
-                                "Error opening a directory");
-                        }
+                            catch (Exception e)
+                            {
+                                MessageBox.Show(
+                                    $"Error opening all images in a directory:  {e.Message}",
+                                    "Error opening a directory");
+                            }
+                            break;
+                        case MessageBoxResult.Cancel: return;
                     }
                 }
             }
@@ -185,7 +220,7 @@ namespace ImageViewer.ViewModels
 
         public void OpenImage(string path)
         {
-            if (File.Exists(path))
+            if (!string.IsNullOrEmpty(path) && path.IsFile())
             {
                 if (ImageVerification.IsValidImage(path))
                 {
@@ -214,7 +249,9 @@ namespace ImageViewer.ViewModels
 
         #endregion
 
-        #region Transforming Images
+        #region Opening nwe images
+
+
 
         #endregion
     }

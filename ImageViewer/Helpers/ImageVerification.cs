@@ -9,7 +9,7 @@ namespace ImageViewer.Helpers
     {
         public static bool IsValidImage(string filePath)
         {
-            return File.Exists(filePath) && StreamIsImage(new FileStream(filePath, FileMode.Open, FileAccess.Read));
+            return filePath.IsFile() && StreamIsImage(new FileStream(filePath, FileMode.Open, FileAccess.Read));
         }
 
         public static bool StreamIsImage(Stream stream)
@@ -31,9 +31,7 @@ namespace ImageViewer.Helpers
 
                 bool isImage = imgTypes.Any(img => !img.Except(bytesIterated).Any());
                 if (isImage)
-                {
                     return true;
-                }
             }
 
             return false;

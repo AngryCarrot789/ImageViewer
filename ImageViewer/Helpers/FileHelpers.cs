@@ -23,5 +23,18 @@ namespace ImageViewer.Helpers
         {
             return !string.IsNullOrEmpty(path) && path.Length < 3;
         }
+
+        public static string GetParentFolder(this string path)
+        {
+            return new DirectoryInfo(path).Parent.FullName;
+        }
+
+        public static string FormatFileNumberForSort(string inVal)
+        {
+            if (int.TryParse(Path.GetFileName(inVal), out int o))
+                return string.Format("{0:0000000000}", o);
+            else
+                return inVal;
+        }
     }
 }

@@ -37,6 +37,9 @@
   <PropertyGroup>
     <ApplicationIcon>appIconIco.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ImageViewer.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
@@ -61,6 +64,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Animations\AnimationLibrary.cs" />
     <Compile Include="Controls\MovableControl.xaml.cs">
       <DependentUpon>MovableControl.xaml</DependentUpon>
@@ -95,6 +101,10 @@
     <Compile Include="Utilities\CommandParam.cs" />
     <Compile Include="Utilities\ScrollViewerHelper.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\MovableControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -175,6 +185,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="appIconIco.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\rotateRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\rotateLeft.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

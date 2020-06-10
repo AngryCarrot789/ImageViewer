@@ -26,21 +26,35 @@ namespace ImageViewer
     /// </summary>
     public partial class MainWindow : Window
     {
+        public AboutWindow About { get; set; } = new AboutWindow();
         public MainViewModel ViewModel { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainViewModel();
-            ViewModel.AnimateFadeIn = AnimateFadeIn;
+            ViewModel = new MainViewModel
+            {
+                AnimateFadeIn = AnimateFadeIn,
+                ResetImagePosition = imgMovable.ResetMargin
+            };
             DataContext = ViewModel;
-            System.Windows.Controls.Image ee;
+
+            Closing += MainWindow_Closing;
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            About.ForceClose();
+            About = null;
+            Application.Current.Shutdown();
         }
 
         public MainWindow(string[] startupArgs)
         {
             InitializeComponent();
-            ViewModel = new MainViewModel();
-            ViewModel.AnimateFadeIn = AnimateFadeIn;
+            ViewModel = new MainViewModel
+            {
+                AnimateFadeIn = AnimateFadeIn
+            };
             DataContext = ViewModel;
 
             foreach(string path in startupArgs)
@@ -79,7 +93,7 @@ namespace ImageViewer
 
         private void ChangeTheme(object sender, RoutedEventArgs e)
         {
-            switch (int.Parse(((Button)sender).Uid))
+            switch (int.Parse(((MenuItem)sender).Uid))
             {
                 case 0: ThemesController.SetTheme(ThemeTypes.Light); break;
                 case 1: ThemesController.SetTheme(ThemeTypes.ColourfulLight); break;
@@ -92,6 +106,11 @@ namespace ImageViewer
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             imgMovable.ResetMargin();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            About.Show();
         }
     }
 }

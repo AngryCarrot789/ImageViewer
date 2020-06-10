@@ -1,4 +1,5 @@
-﻿using ImageViewer.Utilities;
+﻿using ImageViewer.Helpers;
+using ImageViewer.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,21 +35,27 @@ namespace ImageViewer.Image
 
         public FileInformation(string path)
         {
-            FilePath = path;
-
-            if (File.Exists(path))
-            {
-                FileName = Path.GetFileName(path);
-                FileSize = new FileInfo(path).Length;
-            }
+            UpdateValues(path);
         }
+
         public FileInformation(string path, string fileName)
         {
             FilePath = path;
             FileName = fileName;
 
-            if (File.Exists(path))
-                FileSize = new FileInfo(path).Length;
+            if (FilePath.IsFile())
+                FileSize = new FileInfo(FilePath).Length;
+        }
+
+        public void UpdateValues(string path)
+        {
+            FilePath = path;
+
+            if (FilePath.IsFile())
+            {
+                FileName = Path.GetFileName(FilePath);
+                FileSize = new FileInfo(FilePath).Length;
+            }
         }
     }
 }

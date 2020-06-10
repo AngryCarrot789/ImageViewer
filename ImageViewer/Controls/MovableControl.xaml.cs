@@ -144,6 +144,12 @@ namespace ImageViewer.Controls
             this.Margin = new Thickness(0, 0, 0, 0);
         }
 
+        #region Rotation
+
+
+
+        #endregion
+
         private void ControlMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (this != null && CanMove)
