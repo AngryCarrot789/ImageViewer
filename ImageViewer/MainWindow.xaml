@@ -9,6 +9,7 @@
         Style="{DynamicResource CustomWindowStyle}"
         Title="Image Viewer" 
         Height="600" MinWidth="676"
+        PreviewKeyDown="Window_PreviewKeyDown"
         Icon="Resources/appIconIco.ico" Width="1024">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -19,7 +20,7 @@
             <Expander Background="{DynamicResource BackgroundColour}" 
                       HorizontalAlignment="Left"
                       ExpandDirection="Right"
-                      IsExpanded="True">
+                      IsExpanded="False">
                 <Expander.Header>
                     <TextBlock Text="Image List" FontSize="13">
                         <TextBlock.LayoutTransform>

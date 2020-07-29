@@ -141,7 +141,7 @@ namespace ImageViewer.Controls
 
         public void ResetMargin()
         {
-            this.Margin = new Thickness(5);
+            this.Margin = new Thickness(8);
         }
 
         #region Rotation

@@ -115,5 +115,12 @@ namespace ImageViewer
                 MessageBox.Show($"Failed to set clipboard as image --> {ex.Message}");
             }
         }
+
+        // got lazy. its 3am
+        private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.F11)
+                ViewModel.SetFullscreen();
+        }
     }
 }
