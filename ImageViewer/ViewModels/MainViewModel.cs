@@ -289,9 +289,14 @@ namespace ImageViewer.ViewModels
 
         #endregion
 
+        public void SetFullscreen(bool setFullOrNot)
+        {
+            FullscreenWindow.SetFullscreen(Image, setFullOrNot);
+        }
+
         public void SetFullscreen()
         {
-            FullscreenWindow.SetFullscreen(Image);
+            FullscreenWindow.SetFullscreen(Image, true);
         }
 
         public void SetImageIndex(int index)

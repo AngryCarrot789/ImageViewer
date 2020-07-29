@@ -137,7 +137,7 @@
                         </DockPanel>
                     </Grid>
                 </Grid>
-                <Grid Background="{DynamicResource ContainerBorder}" VerticalAlignment="Top" Height="32">
+                <Grid Background="Transparent" VerticalAlignment="Top" Height="32">
                     <Button Command="{Binding RotateImageCommand}" CommandParameter="r" ToolTip="Rotate right (clockwise)" Background="Transparent" BorderBrush="Transparent"  VerticalAlignment="Center" Margin="457,0,0,0" Height="32" IsEnabled="False" HorizontalAlignment="Left" Width="40">
                         <Image Source="Resources/rotateRight.png" Margin="2"/>
                     </Button>

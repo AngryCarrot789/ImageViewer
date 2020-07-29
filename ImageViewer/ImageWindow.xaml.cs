@@ -46,6 +46,8 @@ namespace ImageViewer
                 UndoFullscreen();
             if (e.Key == Key.Escape)
                 UndoFullscreen();
+            if (e.Key == Key.F11)
+                UndoFullscreen();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -53,19 +55,26 @@ namespace ImageViewer
             imgMovable.ResetMargin();
         }
 
-        public void SetFullscreen(ImageItemViewModel image)
+        public void SetFullscreen(ImageItemViewModel image, bool setFullOrNot)
         {
             if (image != null)
             {
-                Model = image;
-                this.Show();
-                this.Visibility = Visibility.Collapsed;
-                this.Topmost = true;
-                this.WindowStyle = WindowStyle.None;
-                this.ResizeMode = ResizeMode.NoResize;
-                WindowState = WindowState.Maximized;
-                // re-show the window after changing style
-                this.Visibility = Visibility.Visible;
+                if (setFullOrNot)
+                {
+                    Model = image;
+                    this.Show();
+                    this.Visibility = Visibility.Collapsed;
+                    this.Topmost = true;
+                    this.WindowStyle = WindowStyle.None;
+                    this.ResizeMode = ResizeMode.NoResize;
+                    WindowState = WindowState.Maximized;
+                    // re-show the window after changing style
+                    this.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    UndoFullscreen();
+                }
             }
         }
 

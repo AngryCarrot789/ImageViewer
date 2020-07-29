@@ -4,6 +4,7 @@ using ImageViewer.Image;
 using ImageViewer.Themes;
 using ImageViewer.ViewModels;
 using System;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -116,11 +117,16 @@ namespace ImageViewer
             }
         }
 
+        public bool IsImageFullscreen { get; set; }
+
         // got lazy. its 3am
         private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.F11)
-                ViewModel.SetFullscreen();
+            {
+                IsImageFullscreen = !IsImageFullscreen;
+                ViewModel.SetFullscreen(IsImageFullscreen);
+            }
         }
     }
 }
