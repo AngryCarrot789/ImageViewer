@@ -1,0 +1,28 @@
+﻿<Window x:Class="ImageViewer.ImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageViewer"
+        mc:Ignorable="d" xmlns:controls="clr-namespace:ImageViewer.Controls"
+        Title="ImageWindow" Height="450" Width="800">
+    <ScrollViewer Background="{DynamicResource BackgroundColour}"
+                  HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Disabled"
+                  CanContentScroll="False">
+        <ScrollViewer.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Reset Position" Click="Button_Click" 
+                          Template="{DynamicResource SingleDropDownMenuItem}"/>
+            </ContextMenu>
+        </ScrollViewer.ContextMenu>
+        <controls:MovableControl x:Name="imgMovable">
+            <Border BorderBrush="{DynamicResource ControlDisabledBackground}"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" 
+                    BorderThickness="2" CornerRadius="2">
+                <Image Source="{Binding Source, UpdateSourceTrigger=PropertyChanged}" 
+                                            RenderTransformOrigin=".5,.5"/>
+            </Border>
+        </controls:MovableControl>
+    </ScrollViewer>
+</Window>

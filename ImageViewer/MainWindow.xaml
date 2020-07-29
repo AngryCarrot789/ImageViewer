@@ -5,92 +5,95 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageViewer"
         xmlns:utils="clr-namespace:ImageViewer.Utilities" xmlns:controls="clr-namespace:ImageViewer.Controls"
-        mc:Ignorable="d" Style="{DynamicResource CustomWindowStyle}"
-        Title="Image Viewer" Height="600" Width="1024"
-        Icon="Resources/appIconIco.ico">
+        mc:Ignorable="d" 
+        Style="{DynamicResource CustomWindowStyle}"
+        Title="Image Viewer" 
+        Height="600" MinWidth="676"
+        Icon="Resources/appIconIco.ico" Width="1024">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <DropShadowBitmapEffect x:Key="NormalShadow" ShadowDepth="2" Softness="0.2" Opacity="0.64"/>
     </Window.Resources>
-    <Grid Background="{DynamicResource BackgroundColour}">
-        <Menu VerticalAlignment="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="Open Image" Command="{Binding OpenImageCommand}"  Template="{DynamicResource SingleDropDownMenuItem}">
-                    <MenuItem.Icon>
-                        <Image Source="Resources/openFile.png"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Open Folder" Command="{Binding OpenImagesInDirectoryCommand}"  Template="{DynamicResource SingleDropDownMenuItem}">
-                    <MenuItem.Icon>
-                        <Image Source="Resources/openFolder.png"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator Style="{DynamicResource MenuItemSeparator}"/>
-                <MenuItem Header="Close File" Command="{Binding CloseSelectedImageCommand}" ToolTip="Close current File and Remove" Template="{DynamicResource SingleDropDownMenuItem}">
-                    <MenuItem.Icon>
-                        <Image Source="Resources/closeFile.png"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Close All Files" Command="{Binding CloseAllImagesCommand}"  Template="{DynamicResource SingleDropDownMenuItem}">
-                    <MenuItem.Icon>
-                        <Image Source="Resources/closeAllFiles.png"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Theme">
-                <MenuItem Header="Light" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="0">
-                    <MenuItem.Icon>
-                        <Rectangle Stroke="#FF848484" Fill="#FFE8E8E8" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Colourful Light" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="1">
-                    <MenuItem.Icon>
-                        <Rectangle Stroke="#FF2C7FF5" Fill="#FFE8E8E8" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Dark" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="2">
-                    <MenuItem.Icon>
-                        <Rectangle Stroke="#FF404040" Fill="#FF1B1B1B" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Colourful Dark" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="3">
-                    <MenuItem.Icon>
-                        <Rectangle Stroke="#FF2C7FF5" Fill="#FF1B1B1B" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Help" Click="MenuItem_Click"/>
-        </Menu>
-        <Grid Margin="3,21,3,3">
-            <GroupBox Background="{DynamicResource BackgroundColour}" Margin="213,0,0,0">
-                <GroupBox.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Image Viewer" VerticalAlignment="Center"/>
-                        <Separator Style="{DynamicResource VerticalSeparator}" Margin="5 0"/>
-                        <Button VerticalAlignment="Center" Content="Reset Image Position" Width="120" Click="Button_Click" Height="24"/>
-                        <Button VerticalAlignment="Center" Margin="5 0 0 0" Height="24" Width="24">
-                            <Image Source="Resources/rotateLeft.png" Margin="2"/>
+    <Grid Margin="2" Background="{DynamicResource BackgroundColour}">
+        <DockPanel>
+            <Expander Background="{DynamicResource BackgroundColour}" 
+                      HorizontalAlignment="Left"
+                      ExpandDirection="Right"
+                      IsExpanded="True">
+                <Expander.Header>
+                    <TextBlock Text="Image List" FontSize="13">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+                </Expander.Header>
+                <Grid Margin="2 -1 -1 -1" Width="220" MaxWidth="220">
+                    <Grid Height="40" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button ToolTip="Open file" 
+                                    BorderBrush="{DynamicResource ControlBrightDefaultBorderBrush}"
+                                    BorderThickness="1 1 0 1"
+                                    Command="{Binding OpenImageCommand}">
+                            <StackPanel>
+                                <Image Source="Resources/openFile.png" Height="20"/>
+                                <TextBlock Text="Open Image" FontSize="10"/>
+                            </StackPanel>
                         </Button>
-                        <Button VerticalAlignment="Center" Margin="5 0 0 0" Height="24" Width="24">
-                            <Image Source="Resources/rotateRight.png" Margin="2"/>
+                        <Button ToolTip="Open file" Grid.Column="1" 
+                                        BorderBrush="{DynamicResource ControlBrightDefaultBorderBrush}"
+                                        BorderThickness="1"
+                                        Command="{Binding OpenImagesInDirectoryCommand}">
+                            <StackPanel>
+                                <Image Source="Resources/openFolder.png" Height="20"/>
+                                <TextBlock Text="Open Folder" FontSize="10"/>
+                            </StackPanel>
                         </Button>
-                        <Separator Style="{DynamicResource VerticalSeparator}" Margin="5 0"/>
-                        <TextBlock Text="Additional Images:" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Image.AdditionalImagePaths.Count, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
-                        <TextBlock Text="Additional Image Index:" VerticalAlignment="Center" Margin="10 0 0 0"/>
-                        <TextBlock Text="{Binding Image.CurrentImageIndex, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </GroupBox.Header>
-                <Grid>
+                    </Grid>
+                    <Button VerticalAlignment="Top" Margin="0 40 0 0" Height="32" 
+                                    BorderThickness="1 0 1 0" 
+                                    BorderBrush="{DynamicResource ControlBrightDefaultBorderBrush}"
+                                    Content="Open all pictures in this folder"
+                                    ToolTip="If an image is selected, this will open every other image in the folder this image is located in (THIS WILL CLEAR THE IMAGES LIST BELOW)"
+                                    Command="{Binding OpenAdditionalImagesCommand}"/>
+                    <ListBox ItemsSource="{Binding ImageItems, UpdateSourceTrigger=PropertyChanged}"
+                                     SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged}"
+                                     SelectedItem="{Binding SelectedImage, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalContentAlignment="Stretch"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                     AllowDrop="True" 
+                                     Drop="ListBox_Drop" 
+                                     Background="{DynamicResource BackgroundColour}"
+                                     Margin="0,72,0,40"/>
+                    <Button Content="Clear Images" HorizontalAlignment="Left" 
+                            VerticalAlignment="Bottom" Width="220" Height="40" 
+                            BorderBrush="{DynamicResource ControlBrightDefaultBorderBrush}"
+                            BorderThickness="1 0 1 1"
+                            Command="{Binding CloseAllImagesCommand}"/>
+                </Grid>
+            </Expander>
+            <Grid Background="{DynamicResource BackgroundColour}" Margin="3 0 0 0">
+                <Grid Margin="0,32,0,0">
                     <Grid Margin="0,0,0,28">
                         <Grid.InputBindings>
                             <KeyBinding Key="Left" Command="{Binding PreviousImageCommand}"/>
                             <KeyBinding Key="Right" Command="{Binding NextImageCommand}"/>
                         </Grid.InputBindings>
-                        <ScrollViewer DataContext="{Binding Image, UpdateSourceTrigger=PropertyChanged}" Background="{DynamicResource BackgroundColour}"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  VerticalScrollBarVisibility="Disabled"
-                                  CanContentScroll="False">
+                        <ScrollViewer DataContext="{Binding Image, UpdateSourceTrigger=PropertyChanged}"
+                                          Background="{DynamicResource BackgroundColour}"
+                                          HorizontalScrollBarVisibility="Disabled"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          CanContentScroll="False">
+                            <ScrollViewer.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Reset Position" Click="Button_Click" 
+                                            Template="{DynamicResource SingleDropDownMenuItem}"/>
+                                    <MenuItem Header="Copy to Clipboard" Click="CopyClipboardClick" 
+                                            Template="{DynamicResource SingleDropDownMenuItem}"/>
+                                </ContextMenu>
+                            </ScrollViewer.ContextMenu>
                             <controls:MovableControl x:Name="imgMovable">
                                 <Border BorderBrush="{DynamicResource ControlDisabledBackground}"
                                         HorizontalAlignment="Center" VerticalAlignment="Center" 
@@ -99,49 +102,60 @@
                                         <DropShadowEffect BlurRadius="8" Opacity="0.8" ShadowDepth="0" Color="#FF00C0FF"/>
                                     </Border.Effect>
                                     <Image Source="{Binding Source, UpdateSourceTrigger=PropertyChanged}" 
-                                           RenderTransformOrigin=".5,.5"/>
+                                            RenderTransformOrigin=".5,.5"/>
                                 </Border>
                             </controls:MovableControl>
                         </ScrollViewer>
                         <Button HorizontalAlignment="Left" Width="40" 
-                            Background="Transparent" BorderBrush="Transparent" 
-                            Content="&lt;" FontSize="24" Opacity="0.2"
-                            Command="{Binding PreviousImageCommand}"/>
-                        <Button HorizontalAlignment="Right" Width="40" Margin="0,0,0,24" 
-                            Background="Transparent" BorderBrush="Transparent" 
-                            Content="&gt;" FontSize="24" Opacity="0.2"
-                            Command="{Binding NextImageCommand}"/>
+                                    Background="Transparent" BorderBrush="Transparent" 
+                                    Content="&lt;" FontSize="24" Opacity="0.2"
+                                    Visibility="{Binding ElementName=hideNextImageBtnsCheckbox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Command="{Binding PreviousImageCommand}"/>
+                        <Button HorizontalAlignment="Right" Width="40" 
+                                    Background="Transparent" BorderBrush="Transparent" 
+                                    Content="&gt;" FontSize="24" Opacity="0.2"
+                                    Visibility="{Binding ElementName=hideNextImageBtnsCheckbox, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Command="{Binding NextImageCommand}"/>
                     </Grid>
                     <Grid VerticalAlignment="Bottom" Height="28">
                         <Border Background="{DynamicResource BackgroundColour}" BorderBrush="{DynamicResource ControlDefaultBorderBrush}" BorderThickness="1"/>
                         <DockPanel DataContext="{Binding Image.FileInformation, UpdateSourceTrigger=PropertyChanged}" Margin="2">
                             <Grid MinWidth="200" Width="232">
                                 <TextBlock Text="Name:" Margin="3,2,0,2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                <TextBox
-                                         BorderBrush="Transparent"
-                                         Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}" 
-                                         Background="Transparent" Margin="39,2,2,2"/>
+                                <TextBox BorderBrush="Transparent"
+                                        Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}" 
+                                        Background="Transparent" Margin="39,2,2,2"/>
                             </Grid>
                             <Grid>
                                 <TextBlock Text="Path:" HorizontalAlignment="Left" Margin="3,2,0,2" VerticalAlignment="Center"/>
                                 <TextBox Background="Transparent"
-                                         Margin="31,2,2,2"
-                                         BorderBrush="Transparent"
-                                         Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}"/>
+                                        Margin="31,2,2,2"
+                                        BorderBrush="Transparent"
+                                        Text="{Binding FilePath, UpdateSourceTrigger=PropertyChanged}"/>
                             </Grid>
                         </DockPanel>
                     </Grid>
                 </Grid>
-            </GroupBox>
-            <GroupBox Header="Images List" Background="{DynamicResource BackgroundColour}" HorizontalAlignment="Left" Width="210">
-                <ListBox ItemsSource="{Binding ImageItems, UpdateSourceTrigger=PropertyChanged}"
-                         SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged}"
-                         SelectedItem="{Binding SelectedImage, UpdateSourceTrigger=PropertyChanged}"
-                         AllowDrop="True" 
-                         Drop="ListBox_Drop" 
-                         HorizontalContentAlignment="Stretch"
-                         Background="{DynamicResource BackgroundColour}"/>
-            </GroupBox>
-        </Grid>
+                <Grid Background="{DynamicResource ContainerBorder}" VerticalAlignment="Top" Height="32">
+                    <Button Command="{Binding RotateImageCommand}" CommandParameter="r" ToolTip="Rotate right (clockwise)" Background="Transparent" BorderBrush="Transparent"  VerticalAlignment="Center" Margin="457,0,0,0" Height="32" IsEnabled="False" HorizontalAlignment="Left" Width="40">
+                        <Image Source="Resources/rotateRight.png" Margin="2"/>
+                    </Button>
+                    <Button Command="{Binding RotateImageCommand}" CommandParameter="l" ToolTip="Rotate left (anti-clockwise)" Background="Transparent" BorderBrush="Transparent"  VerticalAlignment="Center" Margin="413,0,0,0" Height="32" IsEnabled="False" HorizontalAlignment="Left" Width="40">
+                        <Image Source="Resources/rotateLeft.png" Margin="2"/>
+                    </Button>
+                    <Button Width="40" ToolTip="Set theme to dark" HorizontalAlignment="Right" Click="ChangeTheme" Uid="0">
+                        <Rectangle Stroke="#FF404040" Fill="#FF1B1B1B" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}" Height="16" Width="24"/>
+                    </Button>
+                    <Button Width="40" ToolTip="Set theme to light" Margin="0,0,44,0" HorizontalAlignment="Right" Click="ChangeTheme" Uid="1">
+                        <Rectangle Stroke="#FF848484" Fill="#FFE8E8E8" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}" Height="16" Width="24"/>
+                    </Button>
+                    <Separator Style="{DynamicResource VerticalSeparator}" Margin="0,0,88,0" HorizontalAlignment="Right"/>
+                    <Button Content="Help" Width="41" ToolTip="Open help window" Margin="0,0,94,0" HorizontalAlignment="Right" Click="MenuItem_Click"/>
+                    <Button Command="{Binding FullscreenCommand}" CommandParameter="r" Content="Full Screen" Background="Transparent" BorderBrush="Transparent"  ToolTip="Go full screen" VerticalAlignment="Center" Height="32" HorizontalAlignment="Left" Width="72"/>
+                    <Button Click="Button_Click" CommandParameter="r" Content="Reset Image Position" Background="Transparent" BorderBrush="Transparent"  ToolTip="Go full screen" VerticalAlignment="Center" Margin="76,0,0,0" Height="32" HorizontalAlignment="Left" Width="125"/>
+                    <CheckBox x:Name="hideNextImageBtnsCheckbox" IsChecked="True" Content="Hide Previous/Next image buttons" ToolTip="Hide the 2 buttons on the left/right used for selecting the previous/next image in the list. " VerticalAlignment="Center" Margin="205,0,0,0" Height="32" HorizontalAlignment="Left" Width="204"/>
+                </Grid>
+            </Grid>
+        </DockPanel>
     </Grid>
 </Window>

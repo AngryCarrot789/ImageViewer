@@ -2,7 +2,7 @@
 {
     public enum ThemeTypes
     {
-        Light, ColourfulLight,
-        Dark, ColourfulDark
+        Light,
+        ColourfulDark,
     }
 }

@@ -5,11 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImageViewer.Image"
              mc:Ignorable="d"
-             HorizontalContentAlignment="Stretch"
-             Height="90"
-             MaxHeight="132"
-             d:DesignWidth="164"
-             MaxWidth="164"
+             MinHeight="90"
+             Height="120"
+             MaxHeight="120"
+             MaxWidth="205"
+             Width="205"
+             MinWidth="205"
              Foreground="{DynamicResource ControlDefaultForeground}">
     <UserControl.ContextMenu>
         <ContextMenu>
@@ -21,22 +22,22 @@
     </UserControl.ContextMenu>
     <Grid Background="Transparent">
         <TextBlock Text="{Binding FileInformation.FileName, UpdateSourceTrigger=PropertyChanged}"
+                   ToolTip="{Binding FileInformation.FileName, UpdateSourceTrigger=PropertyChanged}"
                    Background="Transparent"
-                   Margin="2,2,0,69" 
-                   MaxHeight="60"
-                   TextWrapping="Wrap"
-                   FontSize="14" HorizontalAlignment="Left" Width="153" />
-        <Grid Margin="2,0,0,0" Height="69" VerticalAlignment="Bottom">
-            <Grid HorizontalAlignment="Left" Width="50" Height="30" VerticalAlignment="Center" Margin="0,20,0,19">
-                <TextBlock Text="Size:" VerticalAlignment="Top" FontSize="11" Height="15"/>
-                <TextBlock Text="{Binding FileInformation.FileSize, UpdateSourceTrigger=PropertyChanged}" Margin="0,15,0,0" FontSize="10" TextAlignment="Left"/>
-            </Grid>
+                   Margin="2,2,22,0" 
+                   FontSize="14" 
+                   Height="19" 
+                   VerticalAlignment="Top"
+                   TextTrimming="WordEllipsis"/>
+        <Grid Margin="2,21,0,0">
+            <TextBlock Text="Size:" VerticalAlignment="Top" FontSize="11" Height="15" HorizontalAlignment="Left" Width="22"/>
+            <TextBlock Text="{Binding FileInformation.FileSize, UpdateSourceTrigger=PropertyChanged}" FontSize="10" TextAlignment="Left" Height="15" VerticalAlignment="Top" Margin="24,0,0,0"/>
             <Border BorderBrush="{DynamicResource ControlDisabledBorderBrush}" 
                     BorderThickness="1" CornerRadius="2"
-                    Margin="50,2,2,2"
+                    Margin="0,16,2,2"
                     Opacity="0.8">
                 <Image Source="{Binding Path=Source, UpdateSourceTrigger=PropertyChanged}" 
-                           Stretch="Fill"/>
+                       Stretch="Fill"/>
             </Border>
         </Grid>
         <Button Background="Transparent" BorderBrush="Transparent" Content="X" HorizontalAlignment="Right" Margin="0,2,2,0" VerticalAlignment="Top" Width="18" Height="19" Click="Button_Click" FontSize="10" BorderThickness="1"/>

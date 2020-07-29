@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace ImageViewer.ViewModels
 {
@@ -26,12 +27,6 @@ namespace ImageViewer.ViewModels
         private bool _imageSelected;
 
         public ObservableCollection<ImageItem> ImageItems { get; set; }
-
-        public ImageItemViewModel Image
-        {
-            get => _image;
-            set => RaisePropertyChanged(ref _image, value);
-        }
 
         public int SelectedIndex
         {
@@ -45,19 +40,33 @@ namespace ImageViewer.ViewModels
             set => RaisePropertyChanged(ref _selectedImage, value, SetImage);
         }
 
+        public ImageItemViewModel Image
+        {
+            get => _image;
+            set => RaisePropertyChanged(ref _image, value);
+        }
+
         public bool ImageSelected
         {
             get => _imageSelected;
             set => RaisePropertyChanged(ref _imageSelected, value);
         }
 
+        public ImageWindow FullscreenWindow { get; set; }
+
         public ICommand OpenImageCommand { get; private set; }
         public ICommand OpenImagesInDirectoryCommand { get; private set; }
         public ICommand CloseSelectedImageCommand { get; private set; }
         public ICommand CloseAllImagesCommand { get; private set; }
 
+        public ICommand OpenAdditionalImagesCommand { get; private set; }
+
         public ICommand NextImageCommand { get; private set; }
         public ICommand PreviousImageCommand { get; private set; }
+
+        public ICommand RotateImageCommand { get; private set; }
+
+        public ICommand FullscreenCommand { get; private set; }
 
         //public ICommand PrintImageCommand { get; private set; }
 
@@ -66,14 +75,21 @@ namespace ImageViewer.ViewModels
 
         public MainViewModel()
         {
+            FullscreenWindow = new ImageWindow();
             ImageItems = new ObservableCollection<ImageItem>();
             OpenImageCommand = new Command(OpenImageFromExplorer);
             OpenImagesInDirectoryCommand = new Command(OpenImagesInFolder);
             CloseSelectedImageCommand = new Command(CloseSelectedImage);
             CloseAllImagesCommand = new Command(CloseAllImages);
 
+            OpenAdditionalImagesCommand = new Command(GetAdditionalImages);
+
             NextImageCommand = new Command(NextImage);
             PreviousImageCommand = new Command(PreviousImage);
+
+            RotateImageCommand = new CommandParam(RotateImage);
+
+            FullscreenCommand = new Command(SetFullscreen);
         }
 
         public void SetImage(ImageItem item)
@@ -89,14 +105,30 @@ namespace ImageViewer.ViewModels
 
         public void NextImage()
         {
-            if (Image != null)
-                Image.MoveRight();
+            if (SelectedIndex < ImageItems.Count - 1)
+                SelectedIndex++;
         }
 
         public void PreviousImage()
         {
-            if (Image != null)
-                Image.MoveLeft();
+            if (SelectedIndex > 0)
+                SelectedIndex--;
+        }
+
+        public void GetAdditionalImages()
+        {
+            ImageItems.Clear();
+            Image?.GetAdditionalImagesAsync();
+        }
+
+        public void RotateImage(object direction)
+        {
+            string dir = (string)direction;
+
+            if (dir == "l")
+                Image?.RotateImageLeft();
+            else if (dir == "r")
+                Image?.RotateImageRight();
         }
 
         #region Helpers
@@ -209,6 +241,7 @@ namespace ImageViewer.ViewModels
                 Multiselect = true,
                 Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp|All Files|*.*"
             };
+
             if (ofd.ShowDialog() == true)
             {
                 foreach(string imagePath in ofd.FileNames)
@@ -225,6 +258,7 @@ namespace ImageViewer.ViewModels
                 if (ImageVerification.IsValidImage(path))
                 {
                     ImageItemViewModel image = new ImageItemViewModel(path);
+                    SetupImageCallback(image);
                     AddImage(image);
                 }
             }
@@ -254,5 +288,21 @@ namespace ImageViewer.ViewModels
 
 
         #endregion
+
+        public void SetFullscreen()
+        {
+            FullscreenWindow.SetFullscreen(Image);
+        }
+
+        public void SetImageIndex(int index)
+        {
+            SelectedIndex = index;
+        }
+
+        public void SetupImageCallback(ImageItemViewModel vm)
+        {
+            vm.AddImageCallback = OpenImage;
+            vm.SelectImageWithIndexCallback = SetImageIndex;
+        }
     }
 }

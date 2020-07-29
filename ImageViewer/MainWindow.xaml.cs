@@ -4,20 +4,8 @@ using ImageViewer.Image;
 using ImageViewer.Themes;
 using ImageViewer.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ImageViewer
 {
@@ -34,11 +22,16 @@ namespace ImageViewer
             ViewModel = new MainViewModel
             {
                 AnimateFadeIn = AnimateFadeIn,
-                ResetImagePosition = imgMovable.ResetMargin
+                ResetImagePosition = ResetImagePosition
             };
             DataContext = ViewModel;
 
             Closing += MainWindow_Closing;
+        }
+
+        private void ResetImagePosition()
+        {
+            imgMovable.ResetMargin();
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -93,12 +86,10 @@ namespace ImageViewer
 
         private void ChangeTheme(object sender, RoutedEventArgs e)
         {
-            switch (int.Parse(((MenuItem)sender).Uid))
+            switch (int.Parse(((FrameworkElement)sender).Uid))
             {
-                case 0: ThemesController.SetTheme(ThemeTypes.Light); break;
-                case 1: ThemesController.SetTheme(ThemeTypes.ColourfulLight); break;
-                case 2: ThemesController.SetTheme(ThemeTypes.Dark); break;
-                case 3: ThemesController.SetTheme(ThemeTypes.ColourfulDark); break;
+                case 1: ThemesController.SetTheme(ThemeTypes.Light); break;
+                case 0: ThemesController.SetTheme(ThemeTypes.ColourfulDark); break;
             }
             e.Handled = true;
         }
@@ -111,6 +102,18 @@ namespace ImageViewer
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             About.Show();
+        }
+
+        private void CopyClipboardClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Clipboard.SetImage(ViewModel?.Image?.Source as BitmapSource);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to set clipboard as image --> {ex.Message}");
+            }
         }
     }
 }

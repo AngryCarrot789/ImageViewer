@@ -21,10 +21,8 @@ namespace ImageViewer.Themes
             string themeName = null;
             switch (theme)
             {
-                case ThemeTypes.Dark: themeName = "DarkTheme"; break;
-                case ThemeTypes.Light: themeName = "LightTheme"; break;
                 case ThemeTypes.ColourfulDark: themeName = "ColourfulDarkTheme"; break;
-                case ThemeTypes.ColourfulLight: themeName = "ColourfulLightTheme"; break;
+                case ThemeTypes.Light: themeName = "LightTheme"; break;
             }
 
             try

@@ -1,11 +1,8 @@
 ﻿using ImageViewer.Helpers;
 using ImageViewer.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -17,14 +14,13 @@ namespace ImageViewer.Image
     {
         private FileInformation _fileInformation;
         private ImageSource _source;
-        private int _curImgIndex;
+        private string _imagePath;
+
         public FileInformation FileInformation
         {
             get => _fileInformation;
             set => RaisePropertyChanged(ref _fileInformation, value);
         }
-
-        public ObservableCollection<string> AdditionalImagePaths { get; set; }
 
         public ImageSource Source
         {
@@ -32,16 +28,21 @@ namespace ImageViewer.Image
             set => RaisePropertyChanged(ref _source, value);
         }
 
-        public int CurrentImageIndex
+        public string ImagePath
         {
-            get => _curImgIndex;
-            set => RaisePropertyChanged(ref _curImgIndex, value);
+            get => _imagePath; 
+            set => RaisePropertyChanged(ref _imagePath, value);
         }
+
+        public int ImageRotation { get; set; }
+
+        public Action<string> AddImageCallback { get; set; }
+
+        public Action<int> SelectImageWithIndexCallback { get; set; }
 
         public ImageItemViewModel(string path)
         {
             FileInformation = new FileInformation(path);
-            AdditionalImagePaths = new ObservableCollection<string>();
             try
             {
                 LoadImage(path);
@@ -53,40 +54,15 @@ namespace ImageViewer.Image
         {
             if (path.IsFile())
             {
+                ImagePath = path;
                 SetImage(path);
-                Task.Run(() =>
-                {
-
-                    string parent = path.GetParentFolder();
-                    if (parent.IsDirectory())
-                    {
-
-                        IOrderedEnumerable<string> additionalFiles =
-                            Directory.GetFiles(parent).OrderBy(FileHelpers.FormatFileNumberForSort);
-
-                        foreach (string file in additionalFiles)
-                        {
-                            if (ImageVerification.IsValidImage(file))
-                            {
-                                AdditionalImagePaths.Add(file);
-                            }
-                        }
-
-                        CurrentImageIndex = additionalFiles.ToList().IndexOf(path);
-                        if (CurrentImageIndex == -1)
-                        {
-                            ClearAdditionalPaths();
-                            MessageBox.Show("Failed to fetch additional images");
-                        }
-                    }
-                });
             }
-            else
-                MessageBox.Show($"Not a file: {path}");
+            else MessageBox.Show($"Not a file: {path}");
         }
 
         public void SetImage(string path)
         {
+            ImagePath = path;
             Task.Run(() =>
             {
                 BitmapImage image = new BitmapImage();
@@ -95,64 +71,85 @@ namespace ImageViewer.Image
                 image.UriSource = new Uri(path);
                 image.EndInit();
                 image.Freeze();
-                if (App.Current != null)
+                App.Current?.Dispatcher?.Invoke(() =>
                 {
-                    App.Current.Dispatcher.Invoke(() =>
+                    Source = image;
+                    FileInformation.UpdateValues(path);
+                });
+            });
+        }
+
+        public void GetAdditionalImagesAsync()
+        {
+            Task.Run(() =>
+            {
+
+                string parent = ImagePath.GetParentFolder();
+                if (parent.IsDirectory())
+                {
+
+                    IOrderedEnumerable<string> additionalFiles =
+                        Directory.GetFiles(parent).OrderBy(FileHelpers.FormatFileNumberForSort);
+
+                    foreach (string file in additionalFiles)
                     {
-                        Source = image;
-                        FileInformation.UpdateValues(path);
-                    });
+                        App.Current?.Dispatcher?.Invoke(() =>
+                        {
+                            AddImageCallback?.Invoke(file);
+                        });
+                    }
+
+                    SelectImageWithIndexCallback?.Invoke(additionalFiles.ToList().IndexOf(ImagePath));
+
                 }
             });
         }
 
-        public void ClearAdditionalPaths()
+        public void RotateImageLeft()
         {
-            AdditionalImagePaths.Clear();
+            //if (Source != null)
+            //{
+            //    if (Source is BitmapImage bitmap)
+            //    {
+            //        ImageRotation -= 90;
+
+            //        if (ImageRotation == 360)
+            //            ImageRotation = 0;
+
+            //        switch (ImageRotation)
+            //        {
+            //            case 0: bitmap.Rotation = Rotation.Rotate0; break;
+            //            case 90: bitmap.Rotation = Rotation.Rotate90; break;
+            //            case 180: bitmap.Rotation = Rotation.Rotate180; break;
+            //            case 270: bitmap.Rotation = Rotation.Rotate270; break;
+            //        }
+            //    }
+            //}
         }
 
-        public void MoveLeft()
+        public void RotateImageRight()
         {
-            string img = GetPreviousAdditionalPath();
-            if (img.IsFile())
-                SetImage(img);
-        }
+            //if (Source != null)
+            //{
+            //    if (Source is BitmapImage bitmap)
+            //    {
+            //        BitmapImage dupe = bitmap.Clone();
+            //        ImageRotation += 90;
 
-        public void MoveRight()
-        {
-            string img = GetNextAdditionalPath();
-            if (img.IsFile())
-                SetImage(img);
-        }
+            //        if (ImageRotation == 360)
+            //            ImageRotation = 0;
 
-        public string GetPreviousAdditionalPath()
-        {
-            try
-            {
-                if (AdditionalImagePaths.Count > 0 && CurrentImageIndex > 0)
-                {
-                    CurrentImageIndex--;
-                    return AdditionalImagePaths[CurrentImageIndex];
-                }
-                return null;
-            }
-            catch { }
-            return null;
-        }
+            //        switch (ImageRotation)
+            //        {
+            //            case 0: dupe.Rotation = Rotation.Rotate0; break;
+            //            case 90: dupe.Rotation = Rotation.Rotate90; break;
+            //            case 180: dupe.Rotation = Rotation.Rotate180; break;
+            //            case 270: dupe.Rotation = Rotation.Rotate270; break;
+            //        }
 
-        public string GetNextAdditionalPath()
-        {
-            try
-            {
-                if (AdditionalImagePaths.Count > 0 && CurrentImageIndex <= AdditionalImagePaths.Count - 1)
-                {
-                    CurrentImageIndex++;
-                    return AdditionalImagePaths[CurrentImageIndex];
-                }
-                return null;
-            }
-            catch { }
-            return null;
+            //        Source = dupe.Clone();
+            //    }
+            //}
         }
     }
 }
